@@ -2,3 +2,6 @@ name: RewardsGUI
 version: '${project.version}'
 main: net.ragnaroknetwork.rewardsgui.RewardsGUI
 authors: [ iSoham ]
+commands:
+  rewards:
+    description: The only command of RewardsGUI

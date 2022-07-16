@@ -1,9 +1,11 @@
 package net.ragnaroknetwork.rewardsgui;
 
+import net.ragnaroknetwork.rewardsgui.command.RewardsCommand;
 import net.ragnaroknetwork.rewardsgui.config.Config;
 import net.ragnaroknetwork.rewardsgui.config.ConfigManager;
 import net.ragnaroknetwork.rewardsgui.database.Database;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.ipvp.canvas.MenuFunctionListener;
 
 public final class RewardsGUI extends JavaPlugin {
     private ConfigManager<Config> configManager;
@@ -17,15 +19,18 @@ public final class RewardsGUI extends JavaPlugin {
         Config configData = configManager.getConfigData();
 
         database = new Database(configData.database(), getLogger());
+        database.loadRewardsDatabase();
+
+        getServer().getPluginManager().registerEvents(new MenuFunctionListener(), this);
+        getServer().getPluginCommand("rewards").setExecutor(new RewardsCommand(this));
     }
 
     @Override
     public void onDisable() {
-
     }
 
-    public ConfigManager<Config> getPluginConfig() {
-        return configManager;
+    public Config getPluginConfig() {
+        return configManager.getConfigData();
     }
 
     public Database getPluginDatabase() {

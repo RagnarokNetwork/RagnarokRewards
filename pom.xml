@@ -36,6 +36,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>space.arim.dazzleconf</groupId>
             <artifactId>dazzleconf-ext-snakeyaml</artifactId>
             <version>1.3.0-M1</version>
