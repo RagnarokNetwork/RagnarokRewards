@@ -32,5 +32,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: vouchers-jar
-        path: target/RewardsGui.jar
+        path: target/RewardsGUI.jar
         if-no-files-found: error
