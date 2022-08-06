@@ -1,6 +1,7 @@
 package net.ragnaroknetwork.rewardsgui.command;
 
 import net.ragnaroknetwork.rewardsgui.RewardsGUI;
+import net.ragnaroknetwork.rewardsgui.command.commands.AddCommand;
 import net.ragnaroknetwork.rewardsgui.command.commands.GUICommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -17,6 +18,7 @@ public class RewardsCommand implements CommandExecutor {
 
     public RewardsCommand(RewardsGUI plugin) {
         addCommand(new GUICommand(plugin));
+        addCommand(new AddCommand(plugin));
     }
 
     private void addCommand(Command command) {
@@ -46,13 +48,13 @@ public class RewardsCommand implements CommandExecutor {
     }
 
     private void sendHelp(CommandSender sender) {
-        String commands = "Ragnarok Vouchers Commands : \n" +
+        String commands = "Ragnarok Rewards Commands : \n" +
                 this.commands.values().stream()
                         .filter(it -> it.testPermissionSilent(sender))
                         .map(it -> ChatColor.BOLD + it.getName() +
                                 ChatColor.RESET + " : " + it.getDescription())
                         .collect(Collectors.joining("\n")) +
-                "\n/rvouchers <command>";
+                "\n/rewards <command>";
         sender.sendMessage(commands.split("\n"));
     }
 }
