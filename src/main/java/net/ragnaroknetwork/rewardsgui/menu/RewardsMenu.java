@@ -1,6 +1,5 @@
 package net.ragnaroknetwork.rewardsgui.menu;
 
-import net.ragnaroknetwork.rewardsgui.RItemStack;
 import net.ragnaroknetwork.rewardsgui.RewardsGUI;
 import net.ragnaroknetwork.rewardsgui.config.Config;
 import net.ragnaroknetwork.rewardsgui.database.PlayerInventory;
@@ -20,7 +19,6 @@ import org.ipvp.canvas.slot.SlotSettings;
 import org.ipvp.canvas.type.ChestMenu;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -58,7 +56,8 @@ public class RewardsMenu {
     }
 
     private static RewardItem createReward(String id, Material material, String name, List<String> lore) {
-        ItemStack itemStack = RItemStack.of(new ItemStack(material)).asReward(id);
+        ItemStack itemStack = new ItemStack(material);
+        // RItemStack.of(new ItemStack(material)).asReward(id);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName(translate(name));
         meta.setLore(lore.stream().map(RewardsMenu::translate).collect(Collectors.toList()));
@@ -79,7 +78,7 @@ public class RewardsMenu {
         Map<String, Config.RewardConfig> rewardsConfig = config.rewards();
 
         PlayerInventory inventory = plugin.getPluginDatabase().getPlayerInventory(user.getUniqueId());
-        List<ItemStack> items = new ArrayList<>();
+        List<SlotSettings> items = new ArrayList<>();
 
         inventory.getInventoryRewards().stream()
                 .map(id -> {
@@ -89,8 +88,24 @@ public class RewardsMenu {
                 }).collect(Collectors.toList())
                 .forEach(it -> {
                     int rewards = inventory.getRewards(it.id);
-                    for (int i = 0; i < rewards; i++)
-                        items.add(it.item);
+                    for (int i = 0; i < rewards; i++) {
+                        items.add(SlotSettings.builder()
+                                .item(it.item)
+                                .clickOptions(ClickOptions.DENY_ALL)
+                                .clickHandler((player, info) -> {
+                                    System.out.println(player.getName() + " clicked!");
+                                    Config.RewardConfig rewardConfig = config.rewards().get(it.id);
+                                    dispatchCommands(rewardConfig.commands(), player, success -> {
+                                        if (success) {
+                                            inventory.removeReward(it.id);
+                                            player.sendMessage(ChatColor.GREEN + "Successfully claimed " + translate(rewardConfig.displayName()) + "!");
+                                            info.getClickedMenu().close(player);
+                                            new RewardsMenu(plugin, player);
+                                        }
+                                    });
+                                })
+                                .build());
+                    }
                 });
 
         int guiRows = config.guiRows();
@@ -105,25 +120,7 @@ public class RewardsMenu {
                 .previousButton(previousButton)
                 .previousButtonEmpty(previousButtonEmpty)
                 .previousButtonSlot((guiRows - 1) * 9 + 3)
-                .addItems(items)
-                .addSlotSettings(Collections.singletonList(
-                        SlotSettings.builder()
-                                .clickHandler((player, info) -> {
-                                    System.out.println(player.getName() + " clicked!");
-                                    ItemStack item = info.getClickedSlot().getItem(player);
-                                    String rewardId = RItemStack.of(item).getRewardId();
-                                    Config.RewardConfig rewardConfig = config.rewards().get(rewardId);
-                                    dispatchCommands(rewardConfig.commands(), player, success -> {
-                                        if (success) {
-                                            inventory.removeReward(rewardId);
-                                            player.sendMessage(ChatColor.GREEN + "Successfully claimed " + translate(rewardConfig.displayName()) + "!");
-                                            info.getClickedMenu().close(player);
-                                            new RewardsMenu(plugin, player);
-                                        }
-                                    });
-                                })
-                                .build()
-                ))
+                .addSlotSettings(items)
                 .build();
         pages.get(0).open(user);
     }
