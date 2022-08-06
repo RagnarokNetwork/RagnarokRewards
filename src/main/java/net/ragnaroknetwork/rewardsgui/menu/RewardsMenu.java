@@ -108,7 +108,6 @@ public class RewardsMenu {
                 .addItems(items)
                 .addSlotSettings(Collections.singletonList(
                         SlotSettings.builder()
-                                .clickOptions(ClickOptions.builder().allClickTypes().build())
                                 .clickHandler((player, info) -> {
                                     System.out.println(player.getName() + " clicked!");
                                     ItemStack item = info.getClickedSlot().getItem(player);
