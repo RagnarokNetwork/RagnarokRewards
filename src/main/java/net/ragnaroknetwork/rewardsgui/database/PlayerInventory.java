@@ -75,7 +75,7 @@ public class PlayerInventory {
         try (
                 Connection connection = database.getConnection();
                 final PreparedStatement preparedStatement = connection
-                        .prepareStatement("UPDATE rewards SET inventory = ? WHERE guild_id = ?")
+                        .prepareStatement("UPDATE rewards SET inventory = ? WHERE uuid = ?")
         ) {
             String value;
             if (inventory.isEmpty()) value = "-";
