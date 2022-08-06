@@ -45,8 +45,8 @@ public class Database {
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS rewards (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "uuid VARCHAR(36) NOT NULL," +
+                    "id INTEGER PRIMARY KEY AUTO_INCREMENT, " +
+                    "uuid VARCHAR(36) NOT NULL, " +
                     "inventory TEXT NOT NULL DEFAULT '-'" +
                     ");");
 
