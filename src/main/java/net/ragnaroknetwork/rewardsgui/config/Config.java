@@ -19,7 +19,7 @@ public interface Config {
     }
 
     @ConfKey("database")
-    DatabaseConfig database();
+    @SubSection DatabaseConfig database();
 
     @ConfKey("gui-rows")
     @ConfComments("Number of rows for the rewards gui. 2 < x <= 6")
