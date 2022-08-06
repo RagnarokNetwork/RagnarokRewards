@@ -108,7 +108,7 @@ public class RewardsMenu {
                 .addItems(items)
                 .addSlotSettings(Collections.singletonList(
                         SlotSettings.builder()
-                                .clickOptions(ClickOptions.DENY_ALL)
+                                .clickOptions(ClickOptions.builder().allClickTypes().build())
                                 .clickHandler((player, info) -> {
                                     ItemStack item = info.getClickedSlot().getItem(player);
                                     String rewardId = RItemStack.of(item).getRewardId();
