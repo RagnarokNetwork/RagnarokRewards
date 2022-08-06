@@ -110,6 +110,7 @@ public class RewardsMenu {
                         SlotSettings.builder()
                                 .clickOptions(ClickOptions.builder().allClickTypes().build())
                                 .clickHandler((player, info) -> {
+                                    System.out.println(player.getName() + " clicked!");
                                     ItemStack item = info.getClickedSlot().getItem(player);
                                     String rewardId = RItemStack.of(item).getRewardId();
                                     Config.RewardConfig rewardConfig = config.rewards().get(rewardId);
