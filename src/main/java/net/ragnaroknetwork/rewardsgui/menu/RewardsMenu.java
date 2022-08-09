@@ -110,8 +110,12 @@ public class RewardsMenu {
 
         int guiRows = config.guiRows();
         ChestMenu.Builder menu = ChestMenu.builder(guiRows).title("Rewards").redraw(true);
-        BinaryMask slots = BinaryMask.builder(menu.getDimensions())
-                .pattern("011111110").build();
+
+        BinaryMask.BinaryMaskBuilder slotsBuilder = BinaryMask.builder(menu.getDimensions());
+        for (int i = 0; i < guiRows; i++)
+            slotsBuilder.pattern("011111110");
+        BinaryMask slots = slotsBuilder.build();
+
         List<Menu> pages = PaginatedMenuBuilder.builder(menu)
                 .slots(slots)
                 .nextButton(nextButton)
