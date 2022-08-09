@@ -36,7 +36,7 @@ public class RewardsMenu {
         nextButtonEmpty = createButton(Material.EMPTY_MAP, ChatColor.GRAY + "Next");
         previousButton = createButton(Material.MAP, ChatColor.GREEN + "Previous");
         previousButtonEmpty = createButton(Material.EMPTY_MAP, ChatColor.GRAY + "Previous");
-        border = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 8);
+        border = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
     }
 
     private static class RewardItem {
