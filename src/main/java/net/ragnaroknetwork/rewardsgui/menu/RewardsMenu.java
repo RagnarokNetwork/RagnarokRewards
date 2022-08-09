@@ -29,12 +29,14 @@ public class RewardsMenu {
     private final static ItemStack nextButtonEmpty;
     private final static ItemStack previousButton;
     private final static ItemStack previousButtonEmpty;
+    private final static ItemStack border;
 
     static {
         nextButton = createButton(Material.MAP, ChatColor.GREEN + "Next");
         nextButtonEmpty = createButton(Material.EMPTY_MAP, ChatColor.GRAY + "Next");
         previousButton = createButton(Material.MAP, ChatColor.GREEN + "Previous");
         previousButtonEmpty = createButton(Material.EMPTY_MAP, ChatColor.GRAY + "Previous");
+        border = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 8);
     }
 
     private static class RewardItem {
@@ -111,8 +113,10 @@ public class RewardsMenu {
         int guiRows = config.guiRows();
         ChestMenu.Builder menu = ChestMenu.builder(guiRows).title("Rewards").redraw(true);
 
-        BinaryMask.BinaryMaskBuilder slotsBuilder = BinaryMask.builder(menu.getDimensions());
-        for (int i = 0; i < guiRows; i++)
+        BinaryMask.BinaryMaskBuilder slotsBuilder = BinaryMask.builder(menu.getDimensions())
+                .pattern("000000000");
+
+        for (int i = 1; i < guiRows - 1; i++)
             slotsBuilder.pattern("011111110");
         BinaryMask slots = slotsBuilder.build();
 
@@ -125,8 +129,20 @@ public class RewardsMenu {
                 .previousButtonEmpty(previousButtonEmpty)
                 .previousButtonSlot((guiRows - 1) * 9 + 3)
                 .addSlotSettings(items)
+                .newMenuModifier(this::menuModifier)
                 .build();
         pages.get(0).open(user);
+    }
+
+    private void menuModifier(Menu menu) {
+        Menu.Dimension dimensions = menu.getDimensions();
+        BinaryMask.BinaryMaskBuilder maskBuilder = BinaryMask.builder(dimensions)
+                .item(border)
+                .pattern("111111111");
+        for (int i = 0; i < dimensions.getRows() - 1; i++)
+            maskBuilder.pattern("100000001");
+        maskBuilder.pattern("111000111");
+        maskBuilder.build().apply(menu);
     }
 
     private void dispatchCommands(List<String> commands, Player player, Consumer<Boolean> success) {
