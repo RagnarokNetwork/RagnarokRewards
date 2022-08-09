@@ -139,7 +139,7 @@ public class RewardsMenu {
         BinaryMask.BinaryMaskBuilder maskBuilder = BinaryMask.builder(dimensions)
                 .item(border)
                 .pattern("111111111");
-        for (int i = 0; i < dimensions.getRows() - 1; i++)
+        for (int i = 0; i < dimensions.getRows() - 2; i++)
             maskBuilder.pattern("100000001");
         maskBuilder.pattern("111000111");
         maskBuilder.build().apply(menu);
