@@ -68,5 +68,9 @@ public interface Config {
         @ConfKey("commands")
         @ConfDefault.DefaultStrings("give @p diamond_sword 1")
         List<String> commands();
+
+        @ConfKey("messages")
+        @ConfDefault.DefaultString("&cYou just got scammed!")
+        List<String> messages();
     }
 }

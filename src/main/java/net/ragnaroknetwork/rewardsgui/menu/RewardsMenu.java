@@ -19,6 +19,7 @@ import org.ipvp.canvas.slot.SlotSettings;
 import org.ipvp.canvas.type.ChestMenu;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -26,16 +27,14 @@ import java.util.stream.Collectors;
 
 public class RewardsMenu {
     private final static ItemStack nextButton;
-    private final static ItemStack nextButtonEmpty;
     private final static ItemStack previousButton;
-    private final static ItemStack previousButtonEmpty;
     private final static ItemStack border;
 
     static {
-        nextButton = createButton(Material.MAP, ChatColor.GREEN + "Next");
-        nextButtonEmpty = createButton(Material.EMPTY_MAP, ChatColor.GRAY + "Next");
-        previousButton = createButton(Material.MAP, ChatColor.GREEN + "Previous");
-        previousButtonEmpty = createButton(Material.EMPTY_MAP, ChatColor.GRAY + "Previous");
+        nextButton = createButton(Material.PAPER, ChatColor.RED + "Next" + ChatColor.DARK_GRAY + " >",
+                ChatColor.GRAY + "Click to go to the next page");
+        previousButton = createButton(Material.MAP, ChatColor.DARK_GRAY + "< " + ChatColor.RED + "Previous",
+                ChatColor.GRAY + "Click to go back one page");
         border = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
     }
 
@@ -49,10 +48,11 @@ public class RewardsMenu {
         }
     }
 
-    private static ItemStack createButton(Material material, String name) {
+    private static ItemStack createButton(Material material, String name, String lore) {
         ItemStack button = new ItemStack(material);
         ItemMeta meta = button.getItemMeta();
         meta.setDisplayName(name);
+        meta.setLore(Collections.singletonList(lore));
         button.setItemMeta(meta);
         return button;
     }
@@ -100,7 +100,9 @@ public class RewardsMenu {
                                     dispatchCommands(rewardConfig.commands(), player, success -> {
                                         if (success) {
                                             inventory.removeReward(it.id);
-                                            player.sendMessage(ChatColor.GREEN + "Successfully claimed " + translate(rewardConfig.displayName()) + "!");
+                                            player.sendMessage(rewardConfig.messages().stream()
+                                                    .map(msg -> ChatColor.translateAlternateColorCodes('&', msg))
+                                                    .toArray(String[]::new));
                                             info.getClickedMenu().close(player);
                                             new RewardsMenu(plugin, player);
                                         }
@@ -111,7 +113,8 @@ public class RewardsMenu {
                 });
 
         int guiRows = config.guiRows();
-        ChestMenu.Builder menu = ChestMenu.builder(guiRows).title("Rewards").redraw(true);
+        ChestMenu.Builder menu = ChestMenu.builder(guiRows)
+                .title(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Killstreak Rewards");
 
         BinaryMask.BinaryMaskBuilder slotsBuilder = BinaryMask.builder(menu.getDimensions())
                 .pattern("000000000");
@@ -123,10 +126,10 @@ public class RewardsMenu {
         List<Menu> pages = PaginatedMenuBuilder.builder(menu)
                 .slots(slots)
                 .nextButton(nextButton)
-                .nextButtonEmpty(nextButtonEmpty)
+                .nextButtonEmpty(nextButton)
                 .nextButtonSlot((guiRows - 1) * 9 + 5)
                 .previousButton(previousButton)
-                .previousButtonEmpty(previousButtonEmpty)
+                .previousButtonEmpty(previousButton)
                 .previousButtonSlot((guiRows - 1) * 9 + 3)
                 .addSlotSettings(items)
                 .newMenuModifier(this::menuModifier)

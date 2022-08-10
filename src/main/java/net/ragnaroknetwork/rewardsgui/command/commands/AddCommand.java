@@ -2,7 +2,6 @@ package net.ragnaroknetwork.rewardsgui.command.commands;
 
 import net.ragnaroknetwork.rewardsgui.RewardsGUI;
 import net.ragnaroknetwork.rewardsgui.config.Config;
-import net.ragnaroknetwork.rewardsgui.menu.RewardsMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -63,7 +62,7 @@ public class AddCommand extends Command {
         Player onlinePlayer = player.getPlayer();
         if (onlinePlayer != null) {
             onlinePlayer.getOpenInventory().close();
-            new RewardsMenu(plugin, onlinePlayer);
+            // new RewardsMenu(plugin, onlinePlayer);
         }
         return true;
     }
