@@ -70,7 +70,7 @@ public interface Config {
         List<String> commands();
 
         @ConfKey("messages")
-        @ConfDefault.DefaultString("&cYou just got scammed!")
+        @ConfDefault.DefaultStrings("&cYou just got scammed!")
         List<String> messages();
     }
 }
