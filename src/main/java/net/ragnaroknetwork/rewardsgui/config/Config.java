@@ -6,15 +6,54 @@ import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.SubSection;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public interface Config {
 
     static Map<String, @SubSection RewardConfig> defaultRewards(RewardConfig config) {
         Map<String, RewardConfig> map = new HashMap<>();
-        map.put("id", config);
+        map.put("wool", config);
+        map.put("sword", new RewardConfig() {
+            @Override
+            public Material material() {
+                return Material.WOOD_SWORD;
+            }
+
+            @Override
+            public short data() {
+                return 30;
+            }
+
+            @Override
+            public String displayName() {
+                return "&cDamaged Sword";
+            }
+
+            @Override
+            public List<String> lore() {
+                return Arrays.asList("Something", "Useless", "POG ?");
+            }
+
+            @Override
+            public boolean enchanted() {
+                return false;
+            }
+
+            @Override
+            public int amount() {
+                return 1;
+            }
+
+            @Override
+            public List<String> commands() {
+                return Collections.singletonList("give @p diamond_sword 1");
+            }
+
+            @Override
+            public List<String> messages() {
+                return Collections.singletonList("&aYou have the brains!");
+            }
+        });
         return map;
     }
 
@@ -54,23 +93,35 @@ public interface Config {
 
     interface RewardConfig {
         @ConfKey("material")
-        @ConfDefault.DefaultString("diamond_sword")
+        @ConfDefault.DefaultString("wool")
         Material material();
 
+        @ConfKey("data")
+        @ConfDefault.DefaultInteger(9)
+        short data();
+
         @ConfKey("display-name")
-        @ConfDefault.DefaultString("&aSword")
+        @ConfDefault.DefaultString("&3Something Awesome")
         String displayName();
 
         @ConfKey("lore")
-        @ConfDefault.DefaultStrings("A really op sword")
+        @ConfDefault.DefaultStrings("A mystery block")
         List<String> lore();
 
+        @ConfKey("enchanted")
+        @ConfDefault.DefaultBoolean(true)
+        boolean enchanted();
+
+        @ConfKey("amount")
+        @ConfDefault.DefaultInteger(1)
+        int amount();
+
         @ConfKey("commands")
-        @ConfDefault.DefaultStrings("give @p diamond_sword 1")
+        @ConfDefault.DefaultStrings("give @p dirt 3")
         List<String> commands();
 
         @ConfKey("messages")
-        @ConfDefault.DefaultStrings("&cYou just got scammed!")
+        @ConfDefault.DefaultStrings("&cYou just got scammed! haha bozo O_O")
         List<String> messages();
     }
 }

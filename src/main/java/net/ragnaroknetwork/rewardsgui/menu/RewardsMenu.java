@@ -7,7 +7,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.command.CommandException;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -31,9 +33,9 @@ public class RewardsMenu {
     private final static ItemStack border;
 
     static {
-        nextButton = createButton(Material.PAPER, ChatColor.RED + "Next" + ChatColor.DARK_GRAY + " >",
+        nextButton = createButton(ChatColor.RED + "Next" + ChatColor.DARK_GRAY + " >",
                 ChatColor.GRAY + "Click to go to the next page");
-        previousButton = createButton(Material.MAP, ChatColor.DARK_GRAY + "< " + ChatColor.RED + "Previous",
+        previousButton = createButton(ChatColor.DARK_GRAY + "< " + ChatColor.RED + "Previous",
                 ChatColor.GRAY + "Click to go back one page");
         border = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
     }
@@ -48,8 +50,8 @@ public class RewardsMenu {
         }
     }
 
-    private static ItemStack createButton(Material material, String name, String lore) {
-        ItemStack button = new ItemStack(material);
+    private static ItemStack createButton(String name, String lore) {
+        ItemStack button = new ItemStack(Material.PAPER);
         ItemMeta meta = button.getItemMeta();
         meta.setDisplayName(name);
         meta.setLore(Collections.singletonList(lore));
@@ -57,13 +59,18 @@ public class RewardsMenu {
         return button;
     }
 
-    private static RewardItem createReward(String id, Material material, String name, List<String> lore) {
-        ItemStack itemStack = new ItemStack(material);
+    private static RewardItem createReward(String id, Config.RewardConfig config) {
+        ItemStack itemStack = new ItemStack(config.material(), config.amount(), config.data());
         // RItemStack.of(new ItemStack(material)).asReward(id);
         ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName(translate(name));
-        meta.setLore(lore.stream().map(RewardsMenu::translate).collect(Collectors.toList()));
+        meta.setDisplayName(translate(config.displayName()));
+        meta.setLore(config.lore().stream().map(RewardsMenu::translate).collect(Collectors.toList()));
+        if (config.enchanted()) {
+            itemStack.addEnchantment(Enchantment.LUCK, 1);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
         itemStack.setItemMeta(meta);
+
 
         return new RewardItem(id, itemStack);
     }
@@ -83,11 +90,8 @@ public class RewardsMenu {
         List<SlotSettings> items = new ArrayList<>();
 
         inventory.getInventoryRewards().stream()
-                .map(id -> {
-                    Config.RewardConfig rewardConfig = rewardsConfig.get(id);
-                    return createReward(id, rewardConfig.material(),
-                            rewardConfig.displayName(), rewardConfig.lore());
-                }).collect(Collectors.toList())
+                .map(id -> createReward(id, rewardsConfig.get(id)))
+                .collect(Collectors.toList())
                 .forEach(it -> {
                     int rewards = inventory.getRewards(it.id);
                     for (int i = 0; i < rewards; i++) {
