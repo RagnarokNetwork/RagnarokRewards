@@ -66,7 +66,7 @@ public class RewardsMenu {
         meta.setDisplayName(translate(config.displayName()));
         meta.setLore(config.lore().stream().map(RewardsMenu::translate).collect(Collectors.toList()));
         if (config.enchanted()) {
-            itemStack.addEnchantment(Enchantment.LUCK, 1);
+            itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         itemStack.setItemMeta(meta);
